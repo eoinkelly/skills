@@ -1,5 +1,5 @@
 ---
-name: pr-desc
+name: pr-description
 description: 'Draft a GitHub pull request description from the current branch compared with main. Use when asked to summarize branch changes, write PR copy, or produce paste-ready raw Markdown grounded in a Git diff.'
 argument-hint: 'Optional focus, audience, or required PR template'
 user-invocable: true
