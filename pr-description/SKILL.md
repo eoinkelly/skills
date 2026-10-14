@@ -18,4 +18,7 @@ Create a concise, accurate, paste-ready GitHub pull request description for the 
 5. If the diff is empty, the base is ambiguous, or the branch includes unusually broad or unclear changes that prevent an accurate summary, ask a focused question or state the limitation instead of fabricating details.
 6. Check for a repository pull request template and follow its structure when present, preserving prompts and headings while filling them with evidence-based content. If there is no template and the user has not requested another format, use a short title followed by `## Summary`, `## Changes`, and `## Testing`.
 7. Return raw Markdown. Keep bullets specific and avoid duplicating the same point across sections. Omit empty sections when using the default format; do not add preamble, analysis, file-by-file narration, or unsupported claims.
-8. format the description as raw markdown in a code block
+
+## Procedure for formatting the output in chat output
+
+format the description generated above as raw markdown in a code block
