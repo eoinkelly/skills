@@ -1,0 +1,600 @@
+bundle: a11y-audit
+bundle_version: 34
+bundle_date: 2026-08-09
+description: >
+  Skill for running accessibility audits on web projects. Combines automated
+  scanning (axe-core via Puppeteer) with configurable standards evidence,
+  template-aware discovery, manual check guidance, accepted accessibility
+  baselines, and configurable output:
+  markdown report only, markdown plus JSON for CI, or markdown plus issue
+  tracker tickets (GitHub, GitLab, Linear, Jira). Generic for any web
+  project; project-specific standards and output preferences configured via
+  a workspace-local .a11y-audit/PROJECT_CONTEXT.md file.
+
+compatibility:
+  designed_for:
+    platform: Portable skill bundle (Claude Code, Codex)
+    surface: Code
+  tested_on:
+    - platform: Anthropic Claude
+      model: Claude Opus 4.6
+      surface: Code
+      status: pass
+      date: 2026-03-03
+      skill_version: 1
+      notes: >
+        Eval-1 against PAICE2 (3 pages). Lighthouse 93, axe-core 76
+        violations (0 critical, 26 serious, 50 moderate), 5 unique rules.
+        Full report generated with all sections.
+    - platform: OpenAI Codex
+      model: GPT-5 Codex
+      surface: Code
+      status: partial
+      date: 2026-03-03
+      skill_version: 4
+      notes: >
+        Bundle refactored for Codex portability: minimal SKILL frontmatter,
+        platform-specific references, workspace-local mutable state, and
+        Codex UI metadata added. Runtime eval still pending.
+    - platform: Portable skill bundle (Claude Code, Codex)
+      surface: Code
+      status: partial
+      date: 2026-03-03
+      skill_version: 5
+      notes: >
+        Added a canonical workspace-local project-context template and
+        updated the core skill to reference that schema. Runtime eval
+        still pending.
+    - platform: OpenAI Codex
+      model: GPT-5 Codex
+      surface: Code
+      status: pass
+      date: 2026-03-03
+      skill_version: 6
+      notes: >
+        Eval-1 run against PAICE2 completed with axe-only output after
+        reconciling a local port mismatch and documenting missing
+        Lighthouse CLI. Report and workspace-local context were created.
+    - platform: Portable skill bundle (Claude Code, Codex)
+      surface: Code
+      status: pass
+      date: 2026-03-03
+      skill_version: 7
+      notes: >
+        Structural validation completed after the refactor: bundled
+        scripts added, detailed references split out, sample artifacts
+        added, expanded eval coverage defined, and manifest/file parsing
+        checks passed.
+    - platform: OpenAI Codex
+      model: GPT-5 Codex
+      surface: Code
+      status: pass
+      date: 2026-03-03
+      skill_version: 8
+      notes: >
+        Direct helper-based runs validated Lighthouse-unavailable and
+        runtime URL reconciliation behavior against PAICE2 using
+        scripts/scan.js. Workspace-local context update and report
+        methodology both behaved as intended.
+    - platform: OpenAI Codex
+      model: GPT-5 Codex
+      surface: Code
+      status: pass
+      date: 2026-03-03
+      skill_version: 9
+      notes: >
+        Direct /tmp validation now covers first-run context creation and
+        missing-browser-automation handling. Issue mode has a safe
+        planning/deduplication step, though live authenticated tracker
+        writes are still pending.
+    - platform: OpenAI Codex
+      model: GPT-5 Codex
+      surface: Code
+      status: pass
+      date: 2026-04-23
+      skill_version: 15
+      notes: >
+        Resolved all three reviewed correctness issues: discovery now
+        preserves published sitemap URLs, representative selection is
+        deterministic, and report.js delta comparison is page-aware.
+        eval-2 now also has a stronger local dry-run mitigation through
+        context-aware issue planning plus a runnable fixture, though
+        live authenticated issue creation remains pending.
+    - platform: OpenAI Codex
+      model: GPT-5
+      surface: Code
+      status: pass
+      date: 2026-05-19
+      skill_version: 16
+      notes: >
+        Added and ran deterministic offline executable eval validation.
+        `npm run validate` now covers syntax checks, JSON/YAML parsing,
+        context bootstrap smoke validation, discovery fixtures, issue
+        planning, quick-scan behavior, skipped-Lighthouse report
+        contracts, page-aware deltas, and dependency policy docs.
+    - platform: OpenAI Codex
+      model: GPT-5
+      surface: Code
+      status: pass
+      date: 2026-05-31
+      skill_version: 17
+      notes: >
+        Security hardening pass validated by `npm run validate`.
+        Scanner dependency installation now rejects unsupported browser
+        package names before dependency lookup and invokes npm with argv.
+        Discovery is same-origin by default with explicit cross-origin
+        sitemap opt-in, bounded fetches, and blocked-origin disclosure.
+        Report and issue-plan Markdown now escape target-derived fields.
+    - platform: Anthropic Claude
+      model: Claude Fable 5
+      surface: Code
+      status: pass
+      date: 2026-07-11
+      skill_version: 15
+      notes: >
+        Durability review pass (v2.2.0): axe-core auto-install pinned to
+        a known-good version with --axe-version override, resolved
+        axe/browser versions recorded in scan output, report delta
+        section guards cross-version comparisons, and stale no-CI claims
+        corrected. Validated via npm run validate (15/15, including new
+        eval-11 mismatch assertions and validateAxeVersion hardening
+        regressions). Roadmap logged in HANDOFF.md.
+    - platform: OpenAI Codex
+      model: GPT-5
+      surface: Desktop
+      status: pass
+      date: 2026-07-11
+      skill_version: 22
+      notes: >
+        External landscape review repositioned the project as a narrow,
+        self-hosted regression gate for large web estates. The v2.3.1 patch
+        corrects public installation, migrates assistant-guide v0.3.3 to
+        GuideCheck 0.7.0, and adds eval-14 distribution drift coverage.
+        Validated via npm run validate (18/18 deterministic checks) plus the
+        GuideCheck Level 3 reference verifier.
+    - platform: Anthropic Claude
+      model: Claude Fable 5
+      surface: Code
+      status: pass
+      date: 2026-07-13
+      skill_version: 17
+      notes: >
+        Pluggable standards data (v2.4.0): criteria matrices extracted
+        to references/standards (wcag21-aa default, wcag22-aa with the
+        six new criteria and 4.1.1 removed, en301549 clause-9
+        rendering), selected via report.js --standard with strict id
+        validation. Assistant guide v0.3.4 re-pins report.js. Validated
+        via npm run validate (19/19) and the GuideCheck 0.7.0 reference
+        verifier (Level 3, no findings).
+  spec_version: agentskills.io/1.0
+  frontmatter_mode: minimal
+
+dependencies:
+  - name: npm:axe-core
+    note: >
+      Injected into Puppeteer/Playwright pages for WCAG violation
+      detection via axe.run(). Install via: npm install axe-core
+  - name: npm:puppeteer
+    note: >
+      Browser automation for loading pages and injecting axe-core in the
+      bundled scanner. Auto-install uses a pinned release.
+  - name: lighthouse
+    note: >
+      CLI for accessibility scoring per page. Optional but recommended.
+      Run via: npx lighthouse. Install globally: npm install -g lighthouse
+  - name: issue tracker CLI (conditional)
+    note: >
+      Only needed in markdown+issues output mode. GitHub: gh.
+      GitLab: glab. Linear: linear CLI or API. Jira: go-jira CLI.
+
+files:
+  - path: SKILL.md
+    role: skill
+    version: 22
+    hash: sha256:21041253a02a86412b148c75abee96bbc4ec545eaf0d7908a0274e08f5628ae1
+    note: >
+      v22 documents reviewed route grouping and direct changed-page selection
+
+  - path: evals/evals.json
+    role: evals
+    version: 20
+    hash: sha256:55cf4f18d3bedd84369910f486774e3e7c8c5ce3d6639d0fe67036e3df7f7a73
+    note: >
+      20 eval cases including Action-consumer maps and hardened direct routes
+
+  - path: HANDOFF.md
+    role: handoff
+    version: 29
+    hash: sha256:b69d2190b690af33747366f8f34f3bc2a8ab543c09cacbf67c0ad76d09e2ad4f
+    note: >
+      v29 records the v2.7.0 release and paused first field pilot
+
+  - path: CHANGELOG.md
+    role: reference
+    version: 34
+    hash: sha256:2ecec3093ccabc0fc0a0b0f56e51f9eb8bbb0c86cc2997760b01db4adaadd1ed
+    note: >
+      Append-only history; v34 releases the hardened v2.7.0 bundle
+
+  - path: evals/run-discover-fixture.js
+    role: evals
+    version: 2
+    hash: sha256:8d07bacc2fc7bfd87f322fbe368ac0eb5f795a29e657b946a325a01193011a5e
+    note: Mocked-network runner preserving earlier fixture contract fields
+
+  - path: evals/run-evals.js
+    role: evals
+    version: 18
+    hash: sha256:81b606557728848bdbe4f24310b7cb4461117d9c4c66878087cf67bf409eb4e4
+    note: >
+      v18 covers consumer maps, direct-route edge cases, v2.7.0 pins, and the
+      reviewed-allowlist audit gate
+
+  - path: evals/run-browser-eval.js
+    role: evals
+    version: 1
+    hash: sha256:dcf34efa6cb03f734896d84b1ca90a17f022a9f288f82d5f9615fa670b200a84
+    note: Real Puppeteer and axe fixture scan with accepted-baseline rescan
+
+  - path: evals/fixtures/eval-11/README.md
+    role: evals
+    version: 1
+    hash: sha256:e32aa86ebf12440d6e03c3ee2d4d9248650f27a4e0e120c9da19a805824b74ce
+    note: Fixture documentation for page-aware delta reporting
+
+  - path: evals/fixtures/eval-11/current-scan.json
+    role: evals
+    version: 1
+    hash: sha256:fd5bed84d09aeaac41a94e2e5683044339db554b8d75da4be666409f3ec206c1
+    note: Current scan fixture for page-aware delta reporting
+
+  - path: evals/fixtures/eval-11/discover.json
+    role: evals
+    version: 1
+    hash: sha256:0da80d764c527342fe562dedad4fab0a523d7688cf549651c1e4aa65d7742b07
+    note: Discovery grouping fixture for page-aware delta reporting
+
+  - path: evals/fixtures/eval-11/previous-audit.json
+    role: evals
+    version: 1
+    hash: sha256:587ec63046ce891751e04789d0523a2194cc1d15f585c44cf5438925f0635c77
+    note: Prior audit fixture for page-aware delta reporting
+
+  - path: evals/fixtures/eval-9/README.md
+    role: evals
+    version: 1
+    hash: sha256:bdc6bf5e1207026b7964371c701e47879e9111577156592bbc97b4e84ac7104b
+    note: Fixture documentation for cross-origin sitemap preservation
+
+  - path: evals/fixtures/eval-9/config.json
+    role: evals
+    version: 1
+    hash: sha256:07a281b197d3871602b3de4870870c049b61f862fbde48b834c556371d3034f4
+    note: Fixture config for eval-9 explicit cross-origin sitemap run
+
+  - path: evals/fixtures/eval-9/responses.json
+    role: evals
+    version: 1
+    hash: sha256:c5262f40f7b41fde5b8dc78a905a9873af2dc24e249df1f287f826abe5f97609
+    note: Mocked HTTP response map for eval-9
+
+  - path: evals/fixtures/eval-9/expected.json
+    role: evals
+    version: 1
+    hash: sha256:77874d398b69fd3c64a4631a953e9af2b9212cb00a11ca3cc15c09dbefd24696
+    note: Expected discovery output for eval-9 with origin disclosure
+
+  - path: evals/fixtures/eval-10/README.md
+    role: evals
+    version: 1
+    hash: sha256:e3edab5feb28f96a6e6d46aa8a7bdd6b3214a9733b2dca7899ded0ac40d208d4
+    note: Fixture documentation for deterministic discovery validation
+
+  - path: evals/fixtures/eval-10/config.json
+    role: evals
+    version: 1
+    hash: sha256:8ed21dee26d385b8587fa84195269b0be813a3cd8f8b711cce24de87e6b77721
+    note: Fixture config for repeated eval-10 discover.js runs
+
+  - path: evals/fixtures/eval-10/responses.json
+    role: evals
+    version: 1
+    hash: sha256:73dd4702f9c82865c7ffece7d6915352a064b37141de0af71ecd685b3872fb97
+    note: Mocked HTTP response map for eval-10
+
+  - path: evals/fixtures/eval-10/expected.json
+    role: evals
+    version: 1
+    hash: sha256:eae2c8b500359e05cae71526167317f076db5345cd41854d1b3d3bc5f874dbee
+    note: Expected repeated discovery output for eval-10 with origin disclosure
+
+  - path: evals/fixtures/eval-12/README.md
+    role: evals
+    version: 1
+    hash: sha256:64f27fe0cd07585e6c3d79b99952398f6b7f2069c4f45521c41183bf7273fb3d
+    note: Fixture documentation for default same-origin discovery policy
+
+  - path: evals/fixtures/eval-12/config.json
+    role: evals
+    version: 1
+    hash: sha256:1cef1b5d33e237b9009dca37159e41554d40c39754637d01b37680044c9d455c
+    note: Fixture config for default same-origin discovery policy
+
+  - path: evals/fixtures/eval-12/responses.json
+    role: evals
+    version: 1
+    hash: sha256:7cc002e9354988d4cab807cbba0862771c618015db9bfb1c544f09acb92d77b7
+    note: Mocked HTTP response map for eval-12
+
+  - path: evals/fixtures/eval-12/expected.json
+    role: evals
+    version: 1
+    hash: sha256:64735e95ae3f22eee8e6a3342cb0e3221dad59c46b858e04a0d85b9bda1b585f
+    note: Expected blocked-origin discovery output for eval-12
+
+  - path: evals/fixtures/eval-2/README.md
+    role: evals
+    version: 1
+    hash: sha256:40842c9d19633a259221fa421b94b7e3404265c48a691ff2fa8b99009c18d16d
+    note: Fixture documentation for issue-mode dry-run mitigation
+
+  - path: evals/fixtures/eval-2/context.md
+    role: evals
+    version: 1
+    hash: sha256:0e50f30be36cec75e88f220ef79f2e6b333370b0aa1c12ceac07e68359d97f4c
+    note: Fixture project context for eval-2
+
+  - path: evals/fixtures/eval-2/current-scan.json
+    role: evals
+    version: 1
+    hash: sha256:04fc3867e3f866459e28c1f7fedf49029a6a1b3998bef082f8655761cf342e6e
+    note: Fixture scan input for eval-2 issue planning
+
+  - path: evals/fixtures/eval-2/existing-keys.json
+    role: evals
+    version: 1
+    hash: sha256:e2abbadfb2a95d91ca93dfaed0894dbe2688f7944ebab1a3279585b9af0ad2a7
+    note: Simulated existing deduplication keys for eval-2
+
+  - path: evals/fixtures/eval-3/README.md
+    role: evals
+    version: 1
+    hash: sha256:186b0c7385d7b207f4d72bfba01ee391c17919a4a6ade63f6b158a0f3f167b5b
+    note: Fixture documentation for quick-scan summary validation
+
+  - path: evals/fixtures/eval-3/current-scan.json
+    role: evals
+    version: 1
+    hash: sha256:9adcc6668c185fafc314c0a3e0c4cc79da8879b0a2244c8abef93e5353883042
+    note: Prebuilt scan-shaped JSON for eval-3 quick-scan validation
+
+  - path: evals/fixtures/eval-3/index.html
+    role: evals
+    version: 1
+    hash: sha256:49b5e6c2c5d8f4022cdcc4534f5129b248c88ad3e09b1d88b874e468d8014fe9
+    note: Plain HTML source fixture for eval-3
+
+  - path: evals/fixtures/eval-4/README.md
+    role: evals
+    version: 1
+    hash: sha256:00d414d032183d06af7efbb92fd35b4ac16bcbb2cf1a4ceb0af0eb71312e53b4
+    note: Fixture documentation for skipped-Lighthouse report contract validation
+
+  - path: evals/fixtures/eval-4/current-scan.json
+    role: evals
+    version: 1
+    hash: sha256:b8498cd6be508016702a4dcd81f6555258e3d0f7de8b84a04fba46f61888faad
+    note: Prebuilt scan-shaped JSON for eval-4 skipped-Lighthouse report validation
+
+  - path: references/claude-code.md
+    role: reference
+    version: 1
+    hash: sha256:9a2f56eb21200a90653f753d1eeed4bef314f80eaf650b26363a4c3b243f7973
+    note: Claude Code-specific launch and Preview guidance
+
+  - path: references/codex.md
+    role: reference
+    version: 1
+    hash: sha256:70e5dd148b9d92a6d287b513eb76ae352869a22c0fdc3cc53c9e604f284f51e0
+    note: Codex-specific workspace and execution guidance
+
+  - path: references/project-context-template.md
+    role: reference
+    version: 3
+    hash: sha256:e111c28abc2f6b948837649ce5c7270d028ab260f92836fb223706676e5af8a4
+    note: >
+      v3 documents bundled standards ids mapped to report.js --standard
+
+  - path: references/output-contract.md
+    role: reference
+    version: 3
+    hash: sha256:552e115fbcba4f7ae205449ed8d1c7c795da6c54ad73de3182409c3309cf204f
+    note: Output requirements with versioned JSON Schema identity
+
+  - path: references/issue-trackers.md
+    role: reference
+    version: 2
+    hash: sha256:5589e8448823141d584b90a88b907428d8ef2fcaa7aac4960df748cb2155f5d3
+    note: Issue creation, deduplication, priority mapping, and stronger dry-run guidance
+
+  - path: references/output-schema.json
+    role: reference
+    version: 2
+    hash: sha256:b219b4374fa745dfc5e821010b147dd788864d90d8f778d22b8e7b6387c1fa09
+    note: Published Draft 2020-12 schema for audit JSON v1
+
+  - path: scripts/scan.js
+    role: script
+    version: 9
+    hash: sha256:b3dbe1d674cfe8528deb434b669f3a7cb3423754f444cee8787786c6df8a4cae
+    note: >
+      v9 pins tested Node 18-compatible Puppeteer 24.43.1
+
+  - path: scripts/bootstrap-context.js
+    role: script
+    version: 2
+    hash: sha256:6cb6dd1413335c13ac9189605212cefbd072cf7498e54f12f461bbd636c66410
+    note: Context bootstrap helper with optional regression-gate fields
+
+  - path: scripts/plan-issues.js
+    role: script
+    version: 2
+    hash: sha256:217f5617ffe968007e19d84899d733203e5712b856f76bcdd7805010157644ad
+    note: Context-aware non-destructive issue planning with Markdown escaping
+
+  - path: scripts/report.js
+    role: script
+    version: 6
+    hash: sha256:ea848df65a3bce9ed721937667626ddc33668e4d4a39080bec57ae7ebfe46f63
+    note: >
+      v6 emits schema_version 1 under the published audit JSON contract
+
+  - path: scripts/discover.js
+    role: script
+    version: 5
+    hash: sha256:c5e4182b42c0c48d80a84f66b0c578c3299ea0bb95eb728bd7b0ad38eb5ed763
+    note: Reviewed route grouping with exact-page conservative fallback
+
+  - path: scripts/select-changed-surfaces.js
+    role: script
+    version: 3
+    hash: sha256:a6ea36588704409058b66cbce2042214234f270dabd2d85f0dd29748e3e74f63
+    note: Schema-v2 direct changed pages with explicit ambiguity fallback
+
+  - path: .gitignore
+    role: config
+    version: 2
+    hash: sha256:2fcab863708d17832bedae952da75621119bc2d8e295f3924b7bfb1862a22685
+    note: Retains scanner dependency manifests while excluding installed packages
+
+  - path: deps/package.json
+    role: config
+    version: 2
+    hash: sha256:ed71cb2f1b09f94a2ba7815f45eb7024a268d9731ec740d37f891f6bb63546bd
+    note: Exact validated axe-core and Puppeteer 24.43.1 scanner dependencies
+
+  - path: deps/package-lock.json
+    role: config
+    version: 4
+    hash: sha256:1206ce98b61a0b7c8e0c16e6b029692b288db8c5756c8b03679a49c4e1d240de
+    note: Reproducible scanner graph with patched js-yaml 4.3.1
+
+  - path: assets/sample-output/audit-sample.md
+    role: asset
+    version: 2
+    hash: sha256:e798b04be87285a2d9aa2f9e2e7cff748aebc3a5487043937e70c1a718ba0806
+    note: Sample markdown output with automated-evidence terminology
+
+  - path: assets/sample-output/audit-sample.json
+    role: asset
+    version: 2
+    hash: sha256:0b55f603d86df74475a49d2606512dd41d4f8d68ab3ff0a6a5b88fbb5a93c0cf
+    note: Schema-valid sample audit JSON v1 artifact
+
+  - path: assets/sample-output/issue-plan-sample.md
+    role: asset
+    version: 1
+    hash: sha256:377e6d156aa367f932fe7c0cf5340554c66b25269a65c86f17623912a1d57cef
+    note: Sample markdown issue-planning artifact
+
+  - path: assets/ci/github-actions/accessibility-audit.yml
+    role: asset
+    version: 9
+    hash: sha256:3e4d1753b1d2eea51c0029bbe279c7604db4d580f85124c0dfaa4be2548deac9
+    note: v2.7.0 Action starter with precise fallback terminology
+
+  - path: assets/ci/github-actions/surface-map.example.json
+    role: asset
+    version: 2
+    hash: sha256:8a06ea7a29ca596286499dac304cf6521b053a440afaef3825c4d052afe590e5
+    note: Schema-v2 ownership map with a direct changed-page transform
+
+  - path: assets/ci/github-actions/route-group-map.example.json
+    role: asset
+    version: 1
+    hash: sha256:5f7dd4131432af9376af3a1c2d92622854ee3125789c6cf5994bd0419ec585c3
+    note: Reviewed flat-site route-group map example
+
+  - path: agents/openai.yaml
+    role: agents
+    version: 4
+    hash: sha256:467383c9b92e27a07b2e93b1215f12720db86cbe74f088b620d525a2aaef1a6f
+    note: Codex UI metadata includes reviewed route groups and changed pages
+
+  - path: references/changed-surfaces.md
+    role: reference
+    version: 2
+    hash: sha256:f52a08878673bc43b86504d1aa4d28af7e59af0be03c7942ae9f3b822b01613a
+    note: Schema-v2 ownership-map and direct-route fallback contract
+
+  - path: references/route-grouping.md
+    role: reference
+    version: 1
+    hash: sha256:d607ead2c0d14e696e2e6d6de73ec25c203223863013caf60dca8a2fdceeb675
+    note: Reviewed route-pattern specificity and fallback contract
+
+  - path: evals/fixtures/eval-19/README.md
+    role: evals
+    version: 2
+    hash: sha256:5ce9e34bf2b5272ed406d92eebe3480b75d25bd64705a1af0877d64e15e93060
+    note: Consumer fixture documentation for both maps and a direct route
+
+  - path: evals/fixtures/eval-19/changed-files.json
+    role: evals
+    version: 1
+    hash: sha256:ffb34cf463a02a279d6b470e3b64074b7bc89613b0b911104c0dcdae3cdbe47b
+    note: Repository-relative changed-file fixture for Action selection
+
+  - path: evals/fixtures/eval-19/route-group-map.json
+    role: evals
+    version: 1
+    hash: sha256:a840a045584b9795693e700dde31893ab0e6949dd42e4d3dce8593db8807770d
+    note: Reviewed route-group map for the composite Action consumer fixture
+
+  - path: evals/fixtures/eval-19/surface-map.json
+    role: evals
+    version: 2
+    hash: sha256:e92a7d930ef8569cc5f935c3ab048272cd4da0640a69763cc492c1ac4b65dcd3
+    note: Schema-v2 direct-route ownership map for Action selection
+
+  - path: evals/fixtures/eval-20/route-group-map.json
+    role: evals
+    version: 1
+    hash: sha256:b696bc6829e30fcd99706cf9053ec2c1b74368556a08a7f37fad3827e016eb9d
+    note: Flat 316-route grouping fixture
+
+  - path: evals/fixtures/eval-20/surface-map.json
+    role: evals
+    version: 1
+    hash: sha256:afaeca6fef04624e409e8d1a1237bb667ae0fbc59effb7a152a8979197baf265
+    note: Direct changed-page and global fallback fixture
+
+  - path: references/standards/wcag21-aa.json
+    role: reference
+    version: 1
+    hash: sha256:510ef14cbbeeeb2fa37c32afda1d7d320ab45d9bd8bc9c8eed95c4428138b4f1
+    note: >
+      All 50 WCAG 2.1 Level A/AA criteria; the default standard, cited
+      by ADA Title II and EN 301 549 V3.2.1
+
+  - path: references/standards/wcag22-aa.json
+    role: reference
+    version: 1
+    hash: sha256:a70592ffc7303f4cad2c84307346edaeb0a7a2984f5defcece2d75b6057b8482
+    note: >
+      All 55 WCAG 2.2 Level A/AA criteria; 4.1.1 removed, six criteria
+      added relative to 2.1
+
+  - path: references/standards/en301549.json
+    role: reference
+    version: 1
+    hash: sha256:ab037da33d3c7801702cb63db1c6a231658476bc45bfcb1ff38357f4ff280e7f
+    note: >
+      EN 301 549 V3.2.1 clause 9 (Web) with clause numbers over the
+      one-to-one WCAG 2.1 A/AA mapping
+
+  - path: MANIFEST.yaml
+    role: reference
+    version: 29
+    hash: null
+    note: This file -- self-referential hash omitted

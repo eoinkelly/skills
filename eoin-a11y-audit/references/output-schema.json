@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skilla11y.dev/schema/audit-v1.json",
+  "title": "Accessibility Audit Output v1",
+  "type": "object",
+  "required": ["schema_version", "date", "tool", "standard", "pages", "summary", "violations", "matrix", "lighthouse"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "date": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "tool": { "type": "string", "pattern": "^a11y-audit report\\.js v\\d+$" },
+    "standard": {
+      "type": "object",
+      "required": ["id", "name"],
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "pages": {
+      "type": "array",
+      "items": { "type": "string", "format": "uri" },
+      "uniqueItems": true
+    },
+    "runtime_url": { "type": "string", "format": "uri" },
+    "expected_url": { "type": "string", "format": "uri" },
+    "axe_version": { "type": "string" },
+    "lighthouse": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          }
+        },
+        {
+          "type": "object",
+          "required": ["status", "reason"],
+          "properties": {
+            "status": { "const": "skipped" },
+            "reason": { "type": "string" }
+          },
+          "additionalProperties": true
+        }
+      ]
+    },
+    "summary": {
+      "type": "object",
+      "required": ["critical", "serious", "moderate", "minor"],
+      "properties": {
+        "critical": { "type": "integer", "minimum": 0 },
+        "serious": { "type": "integer", "minimum": 0 },
+        "moderate": { "type": "integer", "minimum": 0 },
+        "minor": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "violations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["rule", "impact", "pages", "instances"],
+        "properties": {
+          "rule": { "type": "string" },
+          "impact": {
+            "type": ["string", "null"],
+            "enum": ["critical", "serious", "moderate", "minor", null]
+          },
+          "wcag": {
+            "type": "array",
+            "items": { "type": "string" },
+            "uniqueItems": true
+          },
+          "pages": {
+            "type": "array",
+            "items": { "type": "string", "format": "uri" },
+            "uniqueItems": true
+          },
+          "instances": { "type": "integer", "minimum": 0 }
+        },
+        "additionalProperties": true
+      }
+    },
+    "matrix": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "enum": ["pass", "fail", "manual", "not-applicable"]
+      }
+    },
+    "sampling": {
+      "type": "object",
+      "required": ["source", "totalPages", "selectedPages", "groups"],
+      "properties": {
+        "source": { "type": "string" },
+        "originPolicy": { "type": ["string", "null"] },
+        "discoveredOrigins": { "type": "array", "items": { "type": "string", "format": "uri" } },
+        "blockedFetches": { "type": "array" },
+        "totalPages": { "type": "integer", "minimum": 0 },
+        "selectedPages": { "type": "integer", "minimum": 0 },
+        "groups": { "type": "array" }
+      },
+      "additionalProperties": true
+    },
+    "sharedTemplates": { "type": "array" },
+    "delta": {
+      "type": "object",
+      "required": ["previousTotal", "currentTotal", "netDelta", "fixed", "newRules", "changed"],
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}
