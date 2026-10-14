@@ -1,5 +1,6 @@
 ---
 name: eoin-pr-2
+disable-model-invocation: true
 description: "Use when writing a PR body."
 user-invocable: true
 metadata:

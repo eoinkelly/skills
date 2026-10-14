@@ -1,5 +1,7 @@
 ---
 name: eoin-a11y-audit
+disable-model-invocation: true
+user-invocable: true
 description: >
   Run deterministic accessibility audits and regression gates on web
   projects, especially large sites with many routes and shared templates.
@@ -16,10 +18,7 @@ description: >
   mapping to a specific standard (WCAG 2.2, EN 301 549 / European
   Accessibility Act, CAN-ASC-6.2, ADA/AODA).
 ---
-
 # Accessibility Audit
-
-## Architecture
 
 This skill operates as a single layer. It reads the project environment,
 runs automated accessibility tools, maps findings to compliance standards,
